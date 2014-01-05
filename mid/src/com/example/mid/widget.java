@@ -6,8 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import java.util.Calendar;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,32 +25,44 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+
+
+import android.app.AlarmManager;
 import android.app.PendingIntent;
+
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+
+
 import android.os.AsyncTask;
-import android.os.Bundle;
+
 import android.util.Log;
+
+
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 
 
 
-public class widget extends AppWidgetProvider implements LocationListener{
+public class Widget extends AppWidgetProvider {
 	//public static PendingIntent serviceIntent = null;
 	
 	public static PendingIntent serviceIntent = null;
 	public Context context;
-	String weatherResult;
 	
+	///////BUZZ 12/15
+	public static String weatherResult="";
+	
+
+	private static int index = 0; 	 
+	Double longitude=0.0,latitude=0.0;
+	String chooice="",woeid="",weather="",time="";
+	int I_time=10;
+	@Override
 	public void onReceive(Context contextR, Intent intent) {
 		context = contextR;
 		super.onReceive(context, intent); 
@@ -58,7 +71,7 @@ public class widget extends AppWidgetProvider implements LocationListener{
 				){ 
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context); 
 			ComponentName thisWidget = new ComponentName(context.getPackageName(),
-					widget.class.getName());
+					Widget.class.getName());
 			int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget); 
 			
 			onUpdate(context, appWidgetManager, appWidgetIds); 
@@ -69,25 +82,24 @@ public class widget extends AppWidgetProvider implements LocationListener{
     public void onUpdate(Context context,AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		RemoteViews updateViews = new RemoteViews( context.getPackageName(), 
 				R.layout.widget_layout);
-		updateViews.setTextViewText(R.id.tv_widget_text,  
-				new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" ).format( new Date() ) );
-	    appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
-	    
-	    
+		
 	    getmenu_data();
 	    updateViews.setTextViewText(R.id.tv_widget_text, weatherResult );
-	   // Log.d("Buzz Debug", weatherResult);
+	    System.out.println("Buzz Debug"+weatherResult );
 	    appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
- 
+	    
+	    //////BUZZ 12/15
+	    Calendar cal = Calendar.getInstance();		   
+	    cal.add(Calendar.SECOND, 1000);
+	    Log.e("time",""+I_time);
+	    Intent intent = new Intent("ALARM_UPDATE"); 
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, 
+				intent, PendingIntent.FLAG_ONE_SHOT);
+		AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE); 
+		alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
     }
 	
 	
-	
-	private LocationManager lms;
-	private boolean getService=false;
-	private String bestProvider = LocationManager.GPS_PROVIDER;//best data provider
-	Double longitude,latitude;
-	String chooice="",woeid="",weather="",time="";
 	
 	  
 	class MyWeather{//weather constructor
@@ -99,23 +111,33 @@ public class widget extends AppWidgetProvider implements LocationListener{
 		String code;//當前狀態號碼
 		public String toString(){
 			String s;
-			s = "city: " + city + "\n"
-				+ "current temperature: "+ temperature+"\n"
-				+ "humidity: "+humidity+"%\n"+date+"\n"		
-				+ "current: "+text+"   code: "+code;
+			s = "temperature: "+ temperature+"\n"
+					+ "humidity: "+humidity+"%";
 			return s;
 		}
 	}
+
+	public int timechange(String time){//把時間轉成數字
+		int a=0,min=60,hour=3600;//min has 60s
+		if(time.equals("30分鐘")){
+			a=30*min*1000;
+		}else if(time.equals("1小時")){
+			a=hour*1000;
+		}else if(time.equals("2小時")){
+			a=hour*2000;
+		}else if(time.equals("3小時")){
+			a=hour*3000;
+		}else if(time.equals("6小時")){
+			a=hour*6000;
+		}else if(time.equals("12小時")){
+			a=hour*12000;
+		}else if(time.equals("24小時")){
+			a=hour*24000;
+		}
 		
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
+		return a;
+	}
 	
 	private void getmenu_data(){//秀出menu的內容
 		SharedPreferences settings = context.getSharedPreferences("menu_data", 1);
@@ -123,12 +145,13 @@ public class widget extends AppWidgetProvider implements LocationListener{
 		weather=settings.getString("weather", null);
 		time=settings.getString("udpate_time","");
 		
-		
+		I_time=timechange(time);
+		System.out.println("time: "+I_time);
 		if(chooice.equals("gps")){//做天氣、GPS、城市互斥
-			
-			location(context);
-			
-			
+				longitude=Double.parseDouble(settings.getString("longitude","1"));
+				latitude=Double.parseDouble(settings.getString("latitude","1"));
+				getwoeid();
+				
 		}else if(chooice.equals("city")){
 			String city=settings.getString("city", null);
 			
@@ -141,45 +164,14 @@ public class widget extends AppWidgetProvider implements LocationListener{
 			}
 			new MyQueryYahooWeatherTask(woeid).execute();
 			
-		}else if(chooice.equals("weather")){
+		}else if(chooice.equals("weather")){//暫無功能
 			
-			//weather_txt.setText(weather);
+			
 		}
-		Log.i("chooice", ""+chooice);
-		Log.i("weather", ""+weather);
-		Log.i("time", ""+time);
-	}
-	
-	private void location(Context context){//取得系統定位服務
-		
-		LocationManager status = (LocationManager)
-				(context.getSystemService(Context.LOCATION_SERVICE));
-		//取得系統定位服務
-		if(status.isProviderEnabled(LocationManager.GPS_PROVIDER)||
-		status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){//如果GPS或網路定位開啟，呼叫此function更新位置
-			getService=true;//確認開啟定位服務*/
-			LocationManager lm = (LocationManager) 
-			        context.getSystemService(Context.LOCATION_SERVICE);
-			Location location=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			getLocation(location,context);	
-			Log.i("has", "gps");
-		}
-		
 		
 	}
 	
-	private void getLocation(Location location,Context context){//取得經度緯度
-		if(location !=null){		
-			longitude = location.getLongitude();
-			latitude = location.getLatitude();
-			
-			getwoeid();
-			Log.i("longitude", ""+longitude);
-		}else{
-			Log.i("no ", ""+longitude);
-		}
-		
-	}
+	
 	
 	public void getwoeid(){//取得woeid
 		
@@ -193,7 +185,7 @@ public class widget extends AppWidgetProvider implements LocationListener{
 			//Kaohsiung
 			woeid="2306199";
 		}		
-		Log.i("woeid", ""+woeid);
+		System.out.println("woeid: "+woeid);
 		//return woeid;
 		new MyQueryYahooWeatherTask(woeid).execute();
 	}
@@ -229,7 +221,8 @@ public class widget extends AppWidgetProvider implements LocationListener{
 		
 		@Override
 		protected void onPostExecute(Void result) {//print result
-			//weather_txt.setText(weatherResult);
+			
+			
 			super.onPostExecute(result);
 		}
 
@@ -325,8 +318,11 @@ public class widget extends AppWidgetProvider implements LocationListener{
 				myWeather.text=conditionNamedNodeMap.getNamedItem("text").getNodeValue().toString();
 				
 				myWeather.temperature=tempunitchange(myWeather.temperature);//將menu要求的單位做轉換
-				Log.i("code", ""+myWeather.code);
-				Log.i("text", ""+myWeather.text);
+				
+				code_to_weather(myWeather.code);//12/15新增
+				
+				System.out.println("code"+myWeather.code);
+				System.out.println("text"+myWeather.text);
 			}else{
 				myWeather.temperature="EMPTY";
 				
@@ -348,36 +344,23 @@ public class widget extends AppWidgetProvider implements LocationListener{
 
 	}
 
-	
-	
-	protected boolean isRouteDisplayed(){
-		return false;
-	}
-	
-	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		
+	public void code_to_weather(String code){//send CODE to menu 
+		SharedPreferences settings = context.getSharedPreferences ("widget_data",1);
+		int weather_code=0;
+		index=Integer.parseInt(code);
+		if(index>0&&index<18){
+			weather_code=2;//雨天
+		}else if(index>17&&index<31){
+			weather_code=1;//陰天
+		}else if(index==32){
+			weather_code=0;//晴天
+		}
+		SharedPreferences.Editor PE = settings.edit();   
+        PE.putInt("weather_code",weather_code);
+        System.out.println("widget_weather:"+weather_code);
+        PE.commit();
 	}
 	
 	
-
+	
 }

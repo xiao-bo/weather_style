@@ -28,8 +28,8 @@ public class Main extends Activity implements ViewFactory {
 	private ImageSwitcher switcher;//switch
 	protected static final int MENU_BUTTON_1 = Menu.FIRST;//menu
 	protected static final int MENU_BUTTON_2 = Menu.FIRST + 1;
-	private static final Integer[] image_array = { R.drawable.summer,
-          };
+	private static final Integer[] image_array = { R.drawable.summer,R.drawable.sunny,
+		R.drawable.wind,R.drawable.rain, };
 	private static int index = 0; 	 
     @Override
     public void onCreate(Bundle savedInstanceState) {

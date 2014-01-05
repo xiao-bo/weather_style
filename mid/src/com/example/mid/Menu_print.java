@@ -2,27 +2,7 @@ package com.example.mid;
 
 
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,7 +11,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
 
 
@@ -101,12 +81,12 @@ public class Menu_print extends Activity implements LocationListener {
 	
 	
 	private void getmenu_data(){//秀出menu的內容
-		Bundle bundle=this.getIntent().getExtras();
+		/*Bundle bundle=this.getIntent().getExtras();
 		chooice=bundle.getString("chooice");
 		weather=bundle.getString("weather");
-		time=bundle.getString("udpate_time");
+		time=bundle.getString("udpate_time");*/
 		
-		if(chooice.equals("gps")){//做天氣、GPS、城市互斥
+		//if(chooice.equals("gps")){//做天氣、GPS、城市互斥
 			LocationManager status = (LocationManager)
 					(this.getSystemService(Context.LOCATION_SERVICE));
 			//取得系統定位服務
@@ -118,7 +98,8 @@ public class Menu_print extends Activity implements LocationListener {
 				Toast.makeText(this,"請開啟定位服務",Toast.LENGTH_SHORT).show();
 			}
 			
-		}else if(chooice.equals("city")){
+		//}
+		/*else if(chooice.equals("city")){
 			String city=bundle.getString("city");
 			
 			if(city.equals("台北")){
@@ -134,7 +115,7 @@ public class Menu_print extends Activity implements LocationListener {
 			
 			weather_txt.setText(weather);
 		}
-		
+		*/
 		
 	}
 	
@@ -151,14 +132,14 @@ public class Menu_print extends Activity implements LocationListener {
 			
 			longitude_txt.setText(String.valueOf(longitude));
 			latitude_txt.setText(String.valueOf(latitude));	
-			getwoeid();
+			//getwoeid();
 		}else{
 			Toast.makeText(this, "無法定位座標", Toast.LENGTH_LONG).show();
 			weather_txt.setText("請再重開一次頁面");
 		}
 	}
 	
-	public void getwoeid(){//取得woeid
+	/*public void getwoeid(){//取得woeid
 		
 		if (121.69>longitude&&longitude>121.28&&25.29>latitude&&latitude>24.89){
 			text_city.setText("taipei");
@@ -318,7 +299,7 @@ public class Menu_print extends Activity implements LocationListener {
 		}
 
 	}
-
+	 */
 	protected void onResume(){//更新頻率
 		super.onResume();
 		if(getService){

@@ -18,6 +18,7 @@ import java.util.Calendar;
 
 
 
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,6 +33,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 
 
 
@@ -105,7 +107,12 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 		updateViews = new RemoteViews( context.getPackageName(), 
 					R.layout.widget_layout);
 	    getmenu_data();
-	    
+	    try {
+			Thread.sleep(500, 0);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    updateViews.setTextViewText(R.id.tv_widget_text, weatherResult );
 	    //此行出了問題，太早把值傳到widget
 	    
@@ -135,6 +142,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 		String date;//當前時間
 		String text;//當前狀態
 		String code;//當前狀態號碼
+		@Override
 		public String toString(){
 			String s;
 			s = "city: "+city+"\n"+

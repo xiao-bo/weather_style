@@ -8,17 +8,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Calendar;
 
-
-
-
-
-
-
-
-
-
-
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,18 +23,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
-
-
-
-
-
-
-
-
-
-
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -55,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -63,10 +39,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-
 import android.widget.RemoteViews;
 import android.widget.Toast;
-
 
 
 
@@ -121,7 +95,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 	    appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
 	    
 	    Calendar cal = Calendar.getInstance();		   
-	    cal.add(Calendar.SECOND, 1000);
+	    cal.add(Calendar.SECOND, update_time);
 	    //更新死掉了= =?
 	    
 	    Log.e("time",""+update_time);

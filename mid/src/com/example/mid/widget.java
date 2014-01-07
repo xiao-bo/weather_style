@@ -114,7 +114,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 	    appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
 	    
 	    Calendar cal = Calendar.getInstance();		   
-	    cal.add(Calendar.SECOND, 1000);
+	    cal.add(Calendar.SECOND, update_time);
 	    //更新死掉了= =?
 	    
 	    Log.e("time",""+update_time);
@@ -156,10 +156,10 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 		System.out.println("time: "+update_time);
 		
 		if(chooice.equals("gps")){//做天氣、GPS、城市互斥
-				location();
-				//longitude=Double.parseDouble(settings.getString("longitude","1"));
-				//latitude=Double.parseDouble(settings.getString("latitude","1"));
-				//getwoeid();
+				//location();
+				longitude=Double.parseDouble(settings.getString("longitude","1"));
+				latitude=Double.parseDouble(settings.getString("latitude","1"));
+				getwoeid();
 				
 		}else if(chooice.equals("city")){
 			String city=settings.getString("city", null);
@@ -183,7 +183,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 	
 	
 	//gps
-	private LocationManager lms;
+	/*private LocationManager lms;
 	private boolean getService=false;
 	
 	private String bestProvider = LocationManager.GPS_PROVIDER;//best data provider
@@ -196,7 +196,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 			//取得系統定位服務
 			if(status.isProviderEnabled(LocationManager.GPS_PROVIDER)||
 					status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){//如果GPS或網路定位開啟，呼叫此function更新位置
-				getService=true;//確認開啟定位服務*/
+				getService=true;//確認開啟定位服務//
 				locationServiceInitial();
 			}else{
 				System.out.println("gps is fail");
@@ -220,7 +220,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 			getwoeid();
 		}	
 		
-	}
+	}*/
 	
 	
 	
@@ -402,19 +402,19 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 	public int timechange(String time){//把時間轉成數字
 		int I_time=0,min=60,hour=3600;//min has 60s
 		if(time.equals("30分鐘")){
-			I_time=30*min*1000;
+			I_time=30*min;
 		}else if(time.equals("1小時")){
-			I_time=hour*1000;
+			I_time=hour;
 		}else if(time.equals("2小時")){
-			I_time=hour*2000;
+			I_time=hour*2;
 		}else if(time.equals("3小時")){
-			I_time=hour*3000;
+			I_time=hour*3;
 		}else if(time.equals("6小時")){
-			I_time=hour*6000;
+			I_time=hour*6;
 		}else if(time.equals("12小時")){
-			I_time=hour*12000;
+			I_time=hour*12;
 		}else if(time.equals("24小時")){
-			I_time=hour*24000;
+			I_time=hour*24;
 		}
 		
 		

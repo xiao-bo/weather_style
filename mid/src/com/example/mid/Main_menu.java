@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 
 
-public class Main_menu extends Activity {
+public class Main_menu extends Activity implements LocationListener{
 	Button btn_slides,btn_apply,btn_gps,btn_chooice;
 	TextView text;
 	String temperature[],city[],weather[],udpate_time[];
@@ -163,7 +163,7 @@ public class Main_menu extends Activity {
 					sendshared();
 					
 					changewallpaper();
-					//location();
+					location();
 					
 					Calendar cal = Calendar.getInstance();
 					   
@@ -285,7 +285,7 @@ public class Main_menu extends Activity {
     
    
    
-    /*private void location(){//取得系統定位服務
+    private void location(){//取得系統定位服務
 		if(chooice.equals("gps")){
 			LocationManager status = (LocationManager)
 					(this.getSystemService(Context.LOCATION_SERVICE));
@@ -360,6 +360,6 @@ public class Main_menu extends Activity {
 	}
 	
 	
-	*/
+	
 	
 }

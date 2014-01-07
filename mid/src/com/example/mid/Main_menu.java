@@ -167,7 +167,7 @@ public class Main_menu extends Activity implements LocationListener{
 					
 					Calendar cal = Calendar.getInstance();
 					   
-				    cal.add(Calendar.SECOND, 1);
+				    cal.add(Calendar.MILLISECOND, 1);
 				   
 				    Intent intent = new Intent("ALARM_UPDATE"); 
 					PendingIntent pendingIntent = PendingIntent.getBroadcast(Main_menu.this, 0, 

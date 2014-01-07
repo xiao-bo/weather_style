@@ -26,6 +26,8 @@ public class Animation extends Activity {
         logo();
         
         
+        
+        		
     }
     public void logo(){
     	Thread t = new Thread() {

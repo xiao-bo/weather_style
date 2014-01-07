@@ -20,7 +20,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 
 
-public class Main_menu extends Activity implements LocationListener{
+public class Main_menu extends Activity {
 	Button btn_slides,btn_apply,btn_gps,btn_chooice;
 	TextView text;
 	String temperature[],city[],weather[],udpate_time[];
@@ -142,24 +142,28 @@ public class Main_menu extends Activity implements LocationListener{
            
 	private OnClickListener btf = new OnClickListener() {
     	public void onClick(View v) {
-    		//finish();
-    		Log.e("a","a");
+    		
+    		
     		int id=v.getId();
 				if(id==R.id.button_gps){//to main
 					Intent back_intent = new Intent();
-					back_intent.setClass(Main_menu.this,Menu_print.class);
+					back_intent.setClass(Main_menu.this,GPS_print.class);
 					startActivity(back_intent);
+					
 				}else if(id==R.id.button_slides){//to main
 					Intent slides_intent = new Intent();
 					slides_intent.setClass(Main_menu.this, Slides.class);
 					startActivity(slides_intent);
+					
 				}else if(id==R.id.button_chooice){
 					mutex();
 				}
+				
 				else if(id==R.id.button_apply){//to print
 					sendshared();
+					
 					changewallpaper();
-					location();
+					//location();
 					
 					Calendar cal = Calendar.getInstance();
 					   
@@ -170,7 +174,7 @@ public class Main_menu extends Activity implements LocationListener{
 							intent, PendingIntent.FLAG_ONE_SHOT);
 					AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE); 
 					alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-					//onPause();
+					
 					
 				}
     		
@@ -222,7 +226,7 @@ public class Main_menu extends Activity implements LocationListener{
 		text.setText(chooice+"模式");
     }
    
-    public void sendshared(){
+    public void sendshared(){//保存上次menu的資料，傳給自己  和widget
     	SharedPreferences settings = getSharedPreferences ("menu_data",1);
     	//1才可與其他套件共用
         SharedPreferences.Editor PE = settings.edit();
@@ -234,7 +238,7 @@ public class Main_menu extends Activity implements LocationListener{
         PE.putString("udpate_time",udpate_time[udpate_time_index]);
         PE.putString("chooice",chooice);
         
-        PE.putString("latitude", lat);//1216
+        PE.putString("latitude", lat);
         PE.putString("longitude", lon);
         
         PE.putInt("te_index", te_index);
@@ -248,41 +252,22 @@ public class Main_menu extends Activity implements LocationListener{
     
     protected void onPause(){//傳送資料和保存資料
     	super.onPause();
-    	SharedPreferences settings = getSharedPreferences ("menu_data",1);
-    	//1才可與其他套件共用
-        SharedPreferences.Editor PE = settings.edit();
-        
-        
-        PE.putString("temperature",temperature[te_index]);
-        PE.putString("city",city[city_index]);
-        PE.putString("weather",weather[wea_index]);
-        PE.putString("udpate_time",udpate_time[udpate_time_index]);
-        PE.putString("chooice",chooice);
-        PE.putString("latitude", lat);//1216
-        PE.putString("longitude", lon);
-        
-        PE.putInt("weather_index", wea_index);
-        PE.putInt("udpate_time_index", udpate_time_index);
-        PE.putInt("te_index", te_index);
-        PE.putInt("city_index",city_index);
-        
-       
-        PE.commit();
+    	sendshared();
         
     }
     
     
     
-    public void changewallpaper(){//change wallpaper by code 
+    public void changewallpaper(){//change wallpaper by code from widget
     	int weather_code=0;
     	SharedPreferences settings = getSharedPreferences("widget_data", 1);
     	weather_code=settings.getInt("weather_code", 0);
-    	if(chooice.equals("city")){
-    		
-
+    	
+    	if(chooice.equals("city")){    		
     		System.out.println("Menu_index"+weather_code);//test data 同步 
     	}else if(chooice.equals("weather")){
-    		weather_code=wea_index;
+    		weather_code=wea_index;//spinner chooice weather index
+    		
     	}
 		WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         Resources res = getResources();
@@ -300,14 +285,14 @@ public class Main_menu extends Activity implements LocationListener{
     
    
    
-    private void location(){//取得系統定位服務
+    /*private void location(){//取得系統定位服務
 		if(chooice.equals("gps")){
 			LocationManager status = (LocationManager)
 					(this.getSystemService(Context.LOCATION_SERVICE));
 			//取得系統定位服務
 			if(status.isProviderEnabled(LocationManager.GPS_PROVIDER)||
 					status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){//如果GPS或網路定位開啟，呼叫此function更新位置
-				getService=true;//確認開啟定位服務*/
+				getService=true;//確認開啟定位服務//
 				locationServiceInitial();
 			}else{
 				Toast.makeText(this,"請開啟定位服務",Toast.LENGTH_SHORT).show();
@@ -328,6 +313,7 @@ public class Main_menu extends Activity implements LocationListener{
 			latitude = location.getLatitude();
 			lon=Double.toString(longitude);
 			lat=Double.toString(latitude);
+			
 			sendshared();       
 			text.setText(chooice+"模式"+""+longitude+"~~"+latitude);
 			
@@ -372,5 +358,8 @@ public class Main_menu extends Activity implements LocationListener{
 		// TODO Auto-generated method stub
 		
 	}
-		
+	
+	
+	*/
+	
 }

@@ -45,7 +45,7 @@
         	 
         </activity>
         
-        <activity android:name="com.example.mid.Menu_print">
+        <activity android:name="com.example.mid.GPS_print">
         	 
         </activity>
         

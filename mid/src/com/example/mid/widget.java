@@ -105,7 +105,12 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 		updateViews = new RemoteViews( context.getPackageName(), 
 					R.layout.widget_layout);
 	    getmenu_data();
-	    
+	    try {
+            Thread.sleep(500, 0);
+	    } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+	    }
 	    updateViews.setTextViewText(R.id.tv_widget_text, weatherResult );
 	    //此行出了問題，太早把值傳到widget
 	    
@@ -115,7 +120,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 	    
 	    Calendar cal = Calendar.getInstance();		   
 	    cal.add(Calendar.SECOND, update_time);
-	    //更新死掉了= =?
+	   
 	    
 	    Log.e("time",""+update_time);
 	    Intent intent = new Intent("ALARM_UPDATE"); 

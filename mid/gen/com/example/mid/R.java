@@ -41,23 +41,23 @@ public final class R {
         public static final int action_settings=0x7f0a0014;
         public static final int button1=0x7f0a0011;
         public static final int button2=0x7f0a0012;
-        public static final int button_apply=0x7f0a000c;
+        public static final int button_apply=0x7f0a000b;
         public static final int button_chooice=0x7f0a000a;
-        public static final int button_gps=0x7f0a000d;
-        public static final int button_slides=0x7f0a000b;
-        public static final int dialog=0x7f0a0004;
-        public static final int forward=0x7f0a0003;
-        public static final int image=0x7f0a0001;
+        public static final int button_gps=0x7f0a000c;
+        public static final int button_slides=0x7f0a000d;
+        public static final int dialog=0x7f0a0005;
+        public static final int forward=0x7f0a0004;
+        public static final int image=0x7f0a0002;
         public static final int latitude=0x7f0a000e;
         public static final int longitude=0x7f0a000f;
-        public static final int next=0x7f0a0002;
-        public static final int spinner1=0x7f0a0006;
-        public static final int spinner2=0x7f0a0007;
-        public static final int spinner3=0x7f0a0008;
-        public static final int spinner4=0x7f0a0009;
-        public static final int textView1=0x7f0a0000;
-        public static final int textView2=0x7f0a0005;
+        public static final int next=0x7f0a0003;
+        public static final int spinner1=0x7f0a0007;
+        public static final int spinner2=0x7f0a0008;
+        public static final int spinner3=0x7f0a0009;
+        public static final int textView1=0x7f0a0001;
+        public static final int textView2=0x7f0a0006;
         public static final int tv_widget_text=0x7f0a0013;
+        public static final int videoView1=0x7f0a0000;
         public static final int weather=0x7f0a0010;
     }
     public static final class layout {
@@ -125,7 +125,7 @@ public final class R {
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f080003;
+        public static final int AppTheme=0x7f080004;
         public static final int LightThemeSelector=0x7f080001;
         /** 
         Base application theme, dependent on API level. This theme is replaced
@@ -133,6 +133,7 @@ public final class R {
     
          */
         public static final int NoTitle=0x7f080000;
+        public static final int Weather_Theme=0x7f080003;
     }
     public static final class xml {
         public static final int widget1=0x7f040000;

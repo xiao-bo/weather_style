@@ -32,7 +32,7 @@ public class Slides extends Activity{
 		
 		public void onClick(View v){
 			 Intent intent = new Intent();
-	    	 intent.setClass(Slides.this, Animation.class);
+	    	 intent.setClass(Slides.this, Video.class);
 	    	 startActivity(intent);
 		}
 	};

@@ -8,16 +8,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Calendar;
 
-
-
-
-
-
-
-
-
-
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,27 +23,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
-
-
-
-
-
-
-
-
-
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
-
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -63,25 +44,22 @@ import android.util.Log;
 
 
 import android.widget.RemoteViews;
-import android.widget.Toast;
-
-
 
 
 public class Widget extends AppWidgetProvider  implements LocationListener{
 	
-	
-	private static final String LOCATION_SERVICE = null;
+	private static final Integer[] image_array = {R.drawable.sunny,//change wallpaper
+		R.drawable.wind,R.drawable.rain, };
+	int weather_code;
+	LocationManager status;
 	public static PendingIntent serviceIntent = null;
 	public Context context;
-	
 	public static String weatherResult="";
-	
 	RemoteViews updateViews ;
-	
 	private static int index = 0; 	 
 	Double longitude=0.0,latitude=0.0;
-	String chooice="",woeid="",weather="",Str_time="";
+	String woeid="",weather="",Str_time="";
+	boolean chooice=true;
 	int update_time=10;
 	@Override
 	public void onReceive(Context contextR, Intent intent) {
@@ -104,24 +82,21 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 		
 		updateViews = new RemoteViews( context.getPackageName(), 
 					R.layout.widget_layout);
-	    getmenu_data();
+	    getmenu_data(context);
 	    try {
-            Thread.sleep(500, 0);
+            Thread.sleep(1500, 0);
 	    } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
 	    }
 	    updateViews.setTextViewText(R.id.tv_widget_text, weatherResult );
-	    //此行出了問題，太早把值傳到widget
-	    
-	    System.out.println("Buzz Debug"+weatherResult );
-	    
+	    System.out.println("xiao+: "+weatherResult);
 	    appWidgetManager.updateAppWidget(appWidgetIds, updateViews);
 	    
 	    Calendar cal = Calendar.getInstance();		   
 	    cal.add(Calendar.SECOND, update_time);
 	   
-	    
+	    changewall(context);
 	    Log.e("time",""+update_time);
 	    Intent intent = new Intent("ALARM_UPDATE"); 
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, 
@@ -151,24 +126,18 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 
 	
 	
-	private void getmenu_data(){//秀出menu的內容
+	private void getmenu_data(Context context){//秀出menu的內容
 		SharedPreferences settings = context.getSharedPreferences("menu_data", 1);
-		chooice=settings.getString("chooice", "gps");
+		chooice=settings.getBoolean("chooice", true);
 		weather=settings.getString("weather", null);
 		Str_time=settings.getString("udpate_time","");
 		
 		update_time=timechange(Str_time);
-		System.out.println("time: "+update_time);
-		
-		if(chooice.equals("gps")){//做天氣、GPS、城市互斥
-				//location();
-				longitude=Double.parseDouble(settings.getString("longitude","1"));
-				latitude=Double.parseDouble(settings.getString("latitude","1"));
-				getwoeid();
-				
-		}else if(chooice.equals("city")){
+	
+		if(chooice){//做GPS、城市互斥
+				location(context);			
+		}else if(!chooice){
 			String city=settings.getString("city", null);
-			
 			if(city.equals("台北")){
 				woeid="2306179";
 			}else if(city.equals("台中")){
@@ -176,62 +145,36 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 			}else if(city.equals("高雄")){
 				woeid="2306199";
 			}
-			new MyQueryYahooWeatherTask(woeid).execute();
-			
-		}else if(chooice.equals("weather")){//暫無功能
-			
-			
-		}
-		
+			new MyQueryYahooWeatherTask(woeid).execute();		
+		}		
 	}
 	
 	
 	
-	//gps
-	/*private LocationManager lms;
-	private boolean getService=false;
-	
-	private String bestProvider = LocationManager.GPS_PROVIDER;//best data provider
-	String lon,lat;
-	
-	private void location(){//取得系統定位服務
+	private void location(Context context){//取得系統定位服務
 		
-			LocationManager status = (LocationManager)
-					(context.getSystemService(Context.LOCATION_SERVICE));
+			status = (LocationManager)
+					context.getSystemService(Context.LOCATION_SERVICE);
 			//取得系統定位服務
 			if(status.isProviderEnabled(LocationManager.GPS_PROVIDER)||
-					status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){//如果GPS或網路定位開啟，呼叫此function更新位置
-				getService=true;//確認開啟定位服務//
-				locationServiceInitial();
-			}else{
-				System.out.println("gps is fail");
+				status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){//如果GPS或網路定位開啟，呼叫此function更新位置			
+					Location location=status.getLastKnownLocation(LocationManager.GPS_PROVIDER);					
+					getlocation(location);
 			}
-			
+ 
 	}
-   	
-
-	private void locationServiceInitial(){//取得系統定位服務
-		lms=(LocationManager)context.getSystemService(LOCATION_SERVICE);
-		Location location=lms.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		getLocation(location);	
-	}
-   
-	private void getLocation(Location location){//取得經度緯度
-		if(location !=null){		
+	public void getlocation(Location location){
+		try{
 			longitude = location.getLongitude();
 			latitude = location.getLatitude();
-			System.out.println("lat:"+latitude+"\nlon: "+longitude);
 			
-			getwoeid();
-		}	
-		
-	}*/
-	
-	
-	
+		}catch(NullPointerException e){}
+		getwoeid();
+	}
+			
 	public void getwoeid(){//取得woeid
 		
-		if (121.69>longitude&&longitude>121.28&&25.29>latitude&&latitude>24.89){
+		if (121.69>longitude&&longitude>121.28&&25.29>latitude&&latitude>24.84){
 			//taipei
 			woeid="2306179";
 		}else if(120.84>longitude&&longitude>120.49&&24.35>latitude&&latitude>24.00){
@@ -241,7 +184,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 			//Kaohsiung
 			woeid="2306199";
 		}		
-		System.out.println("woeid: "+woeid);
+		//System.out.println("woeid: "+woeid);
 		//return woeid;
 		new MyQueryYahooWeatherTask(woeid).execute();
 	}
@@ -270,15 +213,14 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 
 		@Override
 		protected Void doInBackground(Void... arg0) {//get source and assign to result
-			weatherString = QueryYahooWeather();//get yahoo weather source from web
+			weatherString = QueryYahooWeather();//get yahoo  source from web
 			Document weatherDoc = convertStringToDocument(weatherString);
 			if(weatherDoc != null){
 				weatherResult = parseWeather(weatherDoc).toString();
-				 
-		        System.out.println("xiao Debug in doInBackground: "+weatherResult );
 				//Have source form web change to data, and assign to result 
 			}else{
 				weatherResult = "Cannot convertStringToDocument!";
+				
 			}
 
 			return null;
@@ -362,11 +304,8 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 				myWeather.text=conditionNamedNodeMap.getNamedItem("text").getNodeValue().toString();
 				
 				myWeather.temperature=tempunitchange(myWeather.temperature);//將menu要求的單位做轉換
-				
 				code_to_weather(myWeather.code);
 				
-				System.out.println("code"+myWeather.code);
-				System.out.println("text"+myWeather.text);
 			}else{
 				myWeather.temperature="EMPTY";
 				
@@ -400,7 +339,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 		}else{
 			temper=temperature+" ℉";
 		}
-		Log.i("temper", ""+temper);
+		
 		return temper;
 	}
 
@@ -409,7 +348,7 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 		if(time.equals("30分鐘")){
 			I_time=30*min;
 		}else if(time.equals("1小時")){
-			I_time=hour;
+			I_time=60*min;
 		}else if(time.equals("2小時")){
 			I_time=hour*2;
 		}else if(time.equals("3小時")){
@@ -420,37 +359,42 @@ public class Widget extends AppWidgetProvider  implements LocationListener{
 			I_time=hour*12;
 		}else if(time.equals("24小時")){
 			I_time=hour*24;
-		}
-		
-		
+		}	
 		return I_time;
 	}
 	
-	public void code_to_weather(String code){//send CODE to menu 
-		SharedPreferences settings = context.getSharedPreferences ("widget_data",1);
-		SharedPreferences.Editor PE = settings.edit();   
-
-		int weather_code=0;
-		index=Integer.parseInt(code);
-		
+	public void code_to_weather(String code){//change code to 0 1 2 		
+		index=Integer.parseInt(code);	
 		if(index>0&&index<18){
 			weather_code=2;//雨天
 		}else if(index>17&&index<31){
 			weather_code=1;//陰天
 		}else if(index==32){
 			weather_code=0;//晴天
-		}
-		
-        PE.putInt("weather_code",weather_code);
-        System.out.println("widget_weather:"+weather_code);
-        PE.commit();
+		}	
         
+        //System.out.println("widget_weather:  "+weather_code);
+        
+       
 	}
 
+	public void changewall(Context context){
+		
+		WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+		Resources res =context.getResources();
+        Bitmap bitmap=BitmapFactory.decodeResource(res,image_array[weather_code]); 
+		 	//System.out.println("change wall: "+weather_code);
+        try{
+			wallpaperManager.setBitmap(bitmap);
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
-		
+		getlocation(location);
 	}
 
 	@Override

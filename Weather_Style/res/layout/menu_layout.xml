@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/menu_name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:prompt="@string/menu_temperature"/>
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+         android:prompt="@string/menu_city"/>
+    
+    <Spinner
+        android:id="@+id/spinner3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+         android:prompt="@string/menu_update_time"/>
+
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" >
+
+	    <Button
+	        android:id="@+id/button_chooice"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/menu_bt_chooice" />
+
+	    <TextView
+	        android:id="@+id/textView1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/menu_text"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	   
+	</LinearLayout>
+
+    
+    
+    <Button
+        android:id="@+id/button_apply"
+        android:layout_width="222dp"
+        android:layout_height="wrap_content"
+        android:text="@string/menu_bt_apply" />
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" >
+   		 <Button
+        	android:id="@+id/button_gps"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:text="@string/menu_bt_gps" />
+   		 
+    	<Button
+        	android:id="@+id/button_slides"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:text="@string/menu_bt_slides"  />
+    </LinearLayout>
+</LinearLayout>

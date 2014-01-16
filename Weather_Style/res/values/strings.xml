@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    
+    
+    <string name="action_settings">Settings</string><!-- main -->
+    <string name="app_name">Weather_Style</string>
+    <string name="bt_dialog">套用</string>
+    <string name="fallingsnow_wp">雪景</string>
+    
+    <string name="btn_logo">開頭動畫</string><!-- slides -->
+    <string name="slides_text">Weather_style可以幫助你獲得你所處在地區的天氣資料，接著更換桌布。點選圖片至下一頁</string>
+    
+    
+    <string name="menu_name">Weather_Style Menu</string><!-- menu -->
+    <string name="menu_bt_slides">簡介</string>
+    <string name="menu_bt_gps">如果GPS有問題</string>
+    
+    <string name="menu_bt_chooice">選擇GPS定位</string>
+    <string name="menu_bt_apply">套用</string>
+    <string name="spinner_title">選項</string>
+    <string name="menu_voice">聲音</string>
+    <string name="menu_dymanic">動態效果</string>
+    
+    <string name="menu_title">GPS定位測試</string>
+	<string name="menu_data"></string>
+	 <string name="menu_back">返回</string>
+	<string name="menu_temperature">溫度單位</string>
+	<string name="menu_city">城市選擇</string>
+	<string name="menu_update_time">更新時間選擇</string>
+	<string name="menu_weather">天氣選擇</string>
+	<string name="menu_text">目前選擇：</string>
+    <string-array name="temperature_array">
+        
+        <item>℃</item>
+        <item>℉</item>
+        
+    </string-array>
+    <string-array name="city_array">
+       
+        <item>台北</item>
+        <item>台中</item>
+        <item>高雄</item>
+    </string-array>
+    <string-array name="weather_array">
+        
+        <item>晴天</item>
+        <item>陰天</item>
+        <item>雨天</item>
+    </string-array>
+    <string-array name="time_array">
+        
+        <item>30分鐘</item>
+        <item>1小時</item>
+        <item>2小時</item>
+        <item>3小時</item>
+        <item>6小時</item>
+        <item>12小時</item>
+        <item>24小時</item>
+    </string-array>
+    
+    <string name ="widget_hello">hello</string><!-- widget -->
+    
+</resources>
